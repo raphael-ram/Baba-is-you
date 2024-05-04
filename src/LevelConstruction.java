@@ -1,24 +1,30 @@
 import java.util.ArrayList;
 
+/**
+ * This class contructs the grid depending of the game level
+ */
 public class LevelConstruction {
 
-	private int level;
 	private ArrayList<String> keywords = new ArrayList<>();
 
-	public LevelConstruction(int level) {
-		if (level <= 0 || level > 7) {
-			throw new IllegalArgumentException("level given is not correct");
-		}
-		this.level = level;
-	}
-
-	public Grid startLevelGame() {
-		return switch (this.level) {
+	/**
+	 * Depending of the level given it constructs the appropriate grid
+	 * @return grid corresponding to the level
+	 */
+	public Grid startLevelGame(int level) {
+		return switch (level) {
 		case 1 -> levelOne();
-		default -> throw new IllegalArgumentException("Unexpected value: " + this.level);
+		default -> throw new IllegalArgumentException("Unexpected value: " + level);
 		};
 	}
 
+	/**
+	 * Fill the grid with a special rule at a defined location
+	 * @param grid 
+	 * @param row index of phrase row
+	 * @param start index of column where the rule location starts
+	 * @param phrase the rule to fill in the grid
+	 */
 	public void fillWord(Grid grid, int row, int start, String phrase) {
 		String[] splitP = phrase.split(" ");
 		for (String s : splitP) {
@@ -29,6 +35,10 @@ public class LevelConstruction {
 		}
 	}
 
+	/**
+	 * Level one grid 
+	 * @return grid corresponding to level one
+	 */
 	public Grid levelOne() {
 		Grid grid = null;
 		grid = new Grid(20);
@@ -56,6 +66,11 @@ public class LevelConstruction {
 		return grid;
 	}
 	
+	
+	/**
+	 * Keywords associated to the level
+	 * @return keywords of the level
+	 */
 	public ArrayList<String> getKeyWords(){
 		return keywords;
 	}

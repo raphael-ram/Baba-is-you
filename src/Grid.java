@@ -1,15 +1,17 @@
 import java.util.ArrayList;
+
 /***
  * This class is about the grid of the game, we should be able to set a grid according to the level
  * The toString is particular ()
- * Reflexion about maintaining keywords in constructor
+ */
+/**
+ * 
  */
 public class Grid {
 
 	private ArrayList<ArrayList<String>> grid = new ArrayList<ArrayList<String>>();
 
 	private static int size;
-
 
 	public Grid(int size) {
 		if (size < 10) {
@@ -28,21 +30,43 @@ public class Grid {
 
 	}
 
+	/**
+	 * Getter of the game grid
+	 * 
+	 * @return grid
+	 */
 	public ArrayList<ArrayList<String>> getGrid() {
 		return grid;
 	}
 
+	/**
+	 * Return size of grid game
+	 * 
+	 * @return size
+	 */
 	public static int getSize() {
 		return size;
 	}
 
-	public void setElement(int indexI,int indexJ, String element) {
+	/**
+	 * Set an element at a position
+	 * 
+	 * @param indexI  index of row
+	 * @param indexJ  index of column
+	 * @param element element which should be placed
+	 */
+	public void setElement(int indexI, int indexJ, String element) {
 		grid.get(indexI).set(indexJ, element);
 	}
 
 ///VOIR SI CES GETTERS SONT NECESSAIRES
 
-
+	/**
+	 * Return grid to string with the associated keywords
+	 * 
+	 * @param keywords
+	 * @return grid as a string
+	 */
 	public String toString(ArrayList<String> keywords) {
 		StringBuilder result = new StringBuilder();
 
