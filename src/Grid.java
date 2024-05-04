@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Objects;
 /***
  * This class is about the grid of the game, we should be able to set a grid according to the level
  * The toString is particular ()
@@ -10,22 +9,14 @@ public class Grid {
 	private ArrayList<ArrayList<String>> grid = new ArrayList<ArrayList<String>>();
 
 	private static int size;
-	private static int level;
-	private ArrayList<String> keywords = new ArrayList<>();
 
-	public Grid(int size, int level, ArrayList<String> keywords) {
-		Objects.requireNonNull(keywords);
+
+	public Grid(int size) {
 		if (size < 10) {
 			throw new IllegalArgumentException("size given is too short");
 		}
 
-		if (level < 0 || level > 7) {
-			throw new IllegalArgumentException("level given is not correct");
-		}
-
-		this.keywords = keywords;
 		Grid.size = size;
-		Grid.level = level;
 
 		for (int i = 0; i < size; i++) {
 			ArrayList<String> row = new ArrayList<>();
@@ -45,10 +36,6 @@ public class Grid {
 		return size;
 	}
 
-	public static int getLevel() {
-		return level;
-	}
-	
 	public void setElement(int indexI,int indexJ, String element) {
 		grid.get(indexI).set(indexJ, element);
 	}
