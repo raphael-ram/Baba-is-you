@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 public class Grid {
@@ -15,8 +16,29 @@ public class Grid {
 	/**
 	 * 
 	 */
-	private static ArrayList<ArrayList<Cell>> grid = new ArrayList<ArrayList<Cell>>();
-
+	private final int  nbLines = 20;
+	private final int nbColumns = 20;
+	public static ArrayList<ArrayList<Cell>> grid = new ArrayList<ArrayList<Cell>>();
+	
+	
+		public boolean possibleToMove(Direction d, int x, int y) {
+			return !(((x - d.x) > (nbLines - 1) || (x - d.x) < 0) || ((y - d.y) > (nbColumns - 1) || (y - d.y) < 0));
+  }
+		
+		public void exchange(Direction d, Cell cell) {
+      if (possibleToMove(d, cell.getPositionX(), cell.getPositionY())) {
+      	Cell tmp =  grid.get(d.x+cell.getPositionX()).get(d.y+cell.getPositionY());
+      	
+         grid.get(cell.getPositionX()).set(cell.getPositionY(), tmp);
+         grid.get(d.x+cell.getPositionX()).set(d.y+cell.getPositionY(), cell);
+      }
+      else {
+      	System.out.println("Pas de mouvement possible");
+      }
+  }
+		
+	
+	
 	public static void launchingData(Path path) throws IOException {
 		Objects.requireNonNull(path);
 		try (var reader = Files.newBufferedReader(path)) {
