@@ -35,4 +35,11 @@ public class Action implements Cell {
 	public String toString() {
 		return "" + this.cellName.charAt(0);
 	}
+
+	@Override
+	public void update_position(int x, int y) {
+		this.posX = x;
+		this.posY = y;
+		
+	}
 }

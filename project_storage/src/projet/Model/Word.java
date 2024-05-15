@@ -32,6 +32,13 @@ public class Word implements Cell{
 	}
 	
 	@Override
+	public void update_position(int x, int y) {
+		this.posX = x;
+		this.posY = y;
+		
+	}
+	
+	@Override
 	public boolean isBaba() {
 		if(cellName.equals("baba"))
 			return true;

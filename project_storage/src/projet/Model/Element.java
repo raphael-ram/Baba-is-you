@@ -27,6 +27,17 @@ public class Element implements Cell{
 		return this.cellName;
 	}
 	@Override
+	public boolean isElement(){
+		return true;
+	}
+	
+	@Override
+	public void update_position(int x, int y) {
+		this.posX = x;
+		this.posY = y;
+		
+	}
+	@Override
 	public String toString() {
 		return "" + this.cellName;
 	}

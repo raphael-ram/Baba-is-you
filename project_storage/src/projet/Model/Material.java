@@ -28,6 +28,13 @@ public class Material implements Cell{
 	}
 	
 	@Override
+	public void update_position(int x, int y) {
+		this.posX = x;
+		this.posY = y;
+		
+	}
+	
+	@Override
 	public String toString() {
 		return "" + this.cellName.charAt(0);
 	}
