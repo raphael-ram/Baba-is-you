@@ -30,27 +30,26 @@ public class Grid {
 		return !(x1 < 0 || x1 > (nbLines - 1) || y1 > (nbColumns - 1) || y1 < 0);
 	}
 
-
 	public void movement(Direction d, Cell cell) {
-		// initial coordinates XY of the cell and his potential next coordinates
-		var cellX = cell.getPositionX();
+		var cellX = cell.getPositionX();// initial coordinates XY of the cell and his potential next coordinates
 		var cellY = cell.getPositionY();
 		var moveX = d.x + cell.getPositionX();
 		var moveY = d.y + cell.getPositionY();
 
 		if (possibleToMove(d, moveX, moveY)) {// check if movement is possible
 			Cell tmp = grid.get(moveX).get(moveY);
-			if (tmp.isElement()) { // if it is an element it is a simple push
-				exchange(tmp, cell, moveX, moveY, cellX, cellY);
-			} else {
-				if (possibleToMove(d, moveX + d.x, moveX + d.x)) {// check element forward to make a double
-					Cell nextTmp = grid.get(moveX + d.x).get(moveY + d.y);
-					forward(nextTmp, tmp, cell, moveX + d.x, moveY + d.y, moveX, moveY, cellX, cellY);
+			if (tmp.isStop() == false) {
+				if (tmp.isPushable() == false) { // if it is an element it is a simple push
+					exchange(tmp, cell, moveX, moveY, cellX, cellY);
+				} else {
+					if (possibleToMove(d, moveX + d.x, moveX + d.x)) {// check element forward to make a double
+						Cell nextTmp = grid.get(moveX + d.x).get(moveY + d.y);
+						forward(nextTmp, tmp, cell, moveX + d.x, moveY + d.y, moveX, moveY, cellX, cellY);
+					}
 				}
-			}
-		} else {
-			System.out.println("Pas de mouvement possible");
-		}
+			} else if (tmp.isWin() == true) {System.out.println("Partie gagnée");}
+			System.out.println("Pas de mouvement possible -> element stop");
+		} else { System.out.println("Pas de mouvement possible");}
 	}
 
 	/**
@@ -67,14 +66,15 @@ public class Grid {
 	 * @param y3      coordinate Y of cell
 	 */
 	public void forward(Cell nextTmp, Cell tmp, Cell cell, int x1, int y1, int x2, int y2, int x3, int y3) {
-		if (nextTmp.isElement()) {
+
+		if (nextTmp.isPushable() == false) {
 			exchange(nextTmp, tmp, x1, y1, x2, y2);
 			exchange(nextTmp, cell, x2, y2, x3, y3);
 		}
 	}
 
 	/**
-	 * 
+	 * @brief Exchange cells
 	 * @param tmp     cell to switch with
 	 * @param initial cell
 	 * @param moveX   coordinate X of tmp
@@ -83,10 +83,16 @@ public class Grid {
 	 * @param cellY   coordinate y of cell
 	 */
 	public void exchange(Cell tmp, Cell cell, int moveX, int moveY, int cellX, int cellY) {
-		cell.update_position(moveX, moveY);
-		tmp.update_position(cellX, cellY);
-		grid.get(moveX).set(moveY, cell);
-		grid.get(cellX).set(cellY, tmp);
+		if (tmp.isWin()) {
+			System.out.println("JEU gagné");
+			grid.get(moveX).set(moveY, cell);
+			grid.get(cellX).set(cellY, new Element("*", cellX, cellY));
+		} else {
+			cell.update_position(moveX, moveY);
+			tmp.update_position(cellX, cellY);
+			grid.get(moveX).set(moveY, cell);
+			grid.get(cellX).set(cellY, tmp);
+		}
 
 	}
 
@@ -123,11 +129,13 @@ public class Grid {
 		case "-" -> new Material("wall", x, y);
 		case "X" -> new Material("flag", x, y);
 		case "M" -> new Material("baba", x, y);
+		case "L" -> new Material("lava", x, y);
+		case "D" -> new Material("skull", x, y);
+		case "E" -> new Material("water", x, y);
 		default -> throw new IllegalArgumentException("Unexpected value: " + data);
 		};
 	}
-	
-	
+
 	/**
 	 * To create Word element
 	 * 
@@ -174,8 +182,8 @@ public class Grid {
 	 */
 	private static Cell classification(String data, int x, int y) {
 		var patternMaterial = Pattern.compile("(O|M|-|X)");
-		var patternWord = Pattern.compile("(baba|rock|flag|wall)");
-		var patternAction = Pattern.compile("(push|you|win|stop)");
+		var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull)");
+		var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt)");
 
 		if (patternMaterial.matcher(data).matches())
 			return materialFabric(data, x, y);
@@ -213,7 +221,7 @@ public class Grid {
 //var pattern = Pattern.compile("");
 //var matcher = pattern.matcher("aaaa");
 //return switch (data) {
-//
+//	
 //case "O" -> new Material("rock", x, y);
 //case "F" -> new Material("flag", x, y);
 //case "-" -> new Material("wall", x, y);

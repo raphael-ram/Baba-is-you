@@ -12,34 +12,62 @@ public class Operator implements Cell{
 		this.posX = x;
 		this.posY = y;
 	}
-	
+
 	@Override
 	public int posX() {
 		return posX;
 	}
-	
+
 	@Override
 	public int posY() {
 		return posY;
 	}
-	
+
 	public String property() {
 		return this.cellName;
 	}
-	
+
 	public boolean isNearTo(Cell close) {
-		return close instanceof Word  || close instanceof Action;
+		return close instanceof Word || close instanceof Action;
+	}
+
+	public String identity() {
+		return "operator";
 	}
 	
+	@Override
+	public String nextIdentity() {
+		return "action";
+	}
+
+	@Override
+	public boolean isProperty() {
+		return true;
+	}
+
 	@Override
 	public void update_position(int x, int y) {
 		this.posX = x;
 		this.posY = y;
-		
+	}
+
+	@Override
+	public boolean isPushable() {
+		return true;
 	}
 	
 	@Override
 	public String toString() {
 		return "" + this.cellName.charAt(0);
+	}
+
+	
+	public void setBaba(boolean b) {
+	}
+	public void setPushable(boolean b) {
+	}
+	public void setStop(boolean b) {
+	}
+	public void setWin(boolean b) {
 	}
 }

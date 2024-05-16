@@ -12,43 +12,66 @@ public class Word implements Cell{
 		this.posX = x;
 		this.posY = y;
 	}
-	
+
 	@Override
 	public int posX() {
 		return posX;
 	}
-	
+
 	@Override
 	public int posY() {
 		return posY;
 	}
-	
+
 	public String property() {
 		return this.cellName;
 	}
-	
+
 	public boolean isNearTo(Cell close) {
 		return close instanceof Operator;
 	}
+
+
 	
 	@Override
 	public void update_position(int x, int y) {
 		this.posX = x;
 		this.posY = y;
-		
+
+	}
+
+	@Override
+	public boolean isPushable() {
+		return true;
 	}
 	
-	@Override
-	public boolean isBaba() {
-		if(cellName.equals("baba"))
-			return true;
-		return false;
+	public String identity() {
+		return "word";
 	}
+
+	@Override
+	public boolean isProperty() {
+		return true;
+	}
+
+	@Override
+	public String nextIdentity() {
+		return "operator";
+	}
+
 	
 	@Override
 	public String toString() {
 		return "" + this.cellName.charAt(0);
 	}
 	
+	public void setBaba(boolean b) {
+	}
+	public void setPushable(boolean b) {
+	}
+	public void setStop(boolean b) {
+	}
+	public void setWin(boolean b) {
+	}
 	
 }

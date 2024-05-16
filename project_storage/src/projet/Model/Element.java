@@ -42,4 +42,14 @@ public class Element implements Cell{
 		return "" + this.cellName;
 	}
 	
+	
+	public void setBaba(boolean b) {
+	}
+	public void setPushable(boolean b) {
+	}
+	public void setStop(boolean b) {
+	}
+	public void setWin(boolean b) {
+	}
+	
 }

@@ -37,9 +37,36 @@ public class Action implements Cell {
 	}
 
 	@Override
+	public boolean isProperty() {
+			return true;
+	}
+	
+	
+	public String identity() {
+			return "action";
+	}
+	
+	@Override
+	public String nextIdentity() {
+		return "fin";
+	}
+	@Override
 	public void update_position(int x, int y) {
 		this.posX = x;
 		this.posY = y;
-		
+	}
+	
+	@Override
+	public boolean isPushable() {
+		return true;
+	}
+	
+	public void setBaba(boolean b) {
+	}
+	public void setPushable(boolean b) {
+	}
+	public void setStop(boolean b) {
+	}
+	public void setWin(boolean b) {
 	}
 }
