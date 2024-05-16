@@ -9,12 +9,13 @@ public class Material implements Cell{
 	private boolean pushSetting;
 	private boolean stopSetting;
 	private boolean winSetting;
-
+	private boolean overSetting;
 	public Material(String cellName, int x, int y) {
 		this.babaSetting = false;
 		this.pushSetting = false;
 		this.stopSetting = false;
 		this.winSetting = false;
+		this.overSetting =false;
 		Objects.requireNonNull(cellName);
 		this.cellName = cellName;
 		this.posX = x;
@@ -88,5 +89,9 @@ public class Material implements Cell{
 	
 	public void setWin(boolean b) {
 		this.winSetting = b;
+	}
+	
+	public void setOver(boolean b) {
+		this.overSetting = b;
 	}
 }

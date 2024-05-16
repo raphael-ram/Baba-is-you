@@ -18,7 +18,9 @@ public class Rule {
 	public Rule(Grid g) {
 		this.g = g;
 	}
-
+	/**
+	 * @brief Research available rules in the games and configure the cells according to them
+	 */
 	public void researchRule() {
 		List<Direction> directions = List.of(Direction.Right, Direction.Down);
 		for (int i = 0; i < g.grid.size(); i++) {
@@ -36,7 +38,10 @@ public class Rule {
 		}
 	}
 
-	private void desactivateYou() {
+	/**
+	 * @brief Deactivate You action on the cells which it is applied on 
+	 */
+	private void deactivateYou() {
 		Consumer<Cell> removeElement = s -> {
 			s.setBaba(false);
 		};
@@ -45,8 +50,12 @@ public class Rule {
 		}
 	}
 
+	/**
+	 * @brief Apply You action on the cell
+	 * @param rule the entire rule
+	 */
 	private void youRule(ArrayList<Cell> rule) {
-		desactivateYou();
+		deactivateYou();
 		Consumer<Cell> newPown = s -> {
 			s.setBaba(true);
 		};
@@ -61,8 +70,11 @@ public class Rule {
 			}
 		}
 	}
-
-	private void desactivatePush() {
+	
+	/**
+	 * @brief Deactivate Push action on the cells which it is applied on
+	 */
+	private void deactivatePush() {
 		Consumer<Cell> removeElement = s -> {
 			s.isPushable();
 		};
@@ -71,8 +83,12 @@ public class Rule {
 		}
 	}
 
+	/**
+	 * @brief Apply Push action on the cell
+	 * @param rule the entire rule
+	 */
 	private void pushRule(ArrayList<Cell> rule) {
-		desactivatePush();
+		deactivatePush();
 		Consumer<Cell> newPush = s -> {
 			s.setPushable(true);
 		};
@@ -87,8 +103,10 @@ public class Rule {
 		}
 	}
 	
-	
-	private void desactivateStop() {
+	/**
+	 * @brief Deactivate Stop action on the cells which it is applied on
+	 */
+	private void deactivateStop() {
 		Consumer<Cell> removeElement = s -> {
 			s.setStop(false);
 		};
@@ -97,8 +115,12 @@ public class Rule {
 		}
 	}
 	
+	/**
+	 * @brief Apply Stop action on the cell
+	 * @param rule the entire rule
+	 */
 	private void stopRule(ArrayList<Cell> rule) {
-		desactivateStop();
+		deactivateStop();
 		Consumer<Cell> newStop = s -> {
 			s.setStop(true);
 		};
@@ -113,14 +135,87 @@ public class Rule {
 		}
 	}
 	
-
+	/**
+	 * @brief Deactivate Win action on the cells which it is applied on
+	 */
+	private void deactivateWin() {
+		Consumer<Cell> removeElement = s -> {
+			s.setWin(false);
+		};
+		for (int i = 0; i < g.grid.size(); i++) {
+			g.grid.get(i).stream().filter(r -> r.isMaterial()).forEach(removeElement);
+		}
+	}
+	
+	/**
+	 * @brief Apply Win action on the cell
+	 * @param rule the entire rule
+	 */
+	private void winRule(ArrayList<Cell> rule) {
+		deactivateWin();
+		Consumer<Cell> newWin = s -> {
+			s.setWin(true);
+		};
+		if (rule.stream().anyMatch(r -> r.property().equals("win"))) { // array containing you as action
+			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
+			if (c != null) {
+				for (int i = 0; i < g.grid.size(); i++) {
+					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
+							.forEach(newWin);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * @brief Deactivate Over action on the cells which it is applied on
+	 */
+	private void deactivateOver() {
+		Consumer<Cell> removeElement = s -> {
+			s.setOver(false);
+		};
+		for (int i = 0; i < g.grid.size(); i++) {
+			g.grid.get(i).stream().filter(r -> r.isMaterial()).forEach(removeElement);
+		}
+	}
+	
+	/**
+	 * @brief Apply Over(defeat, melt, sink) action on the cell
+	 * @param rule the entire rule
+	 */
+	private void overRule(ArrayList<Cell> rule) {
+		deactivateWin();
+		Consumer<Cell> newOver = s -> {
+			s.setOver(true);
+		};
+		if (rule.stream().anyMatch(r -> List.of("sink", "melt", "defeat").contains(r.property()))) { // array containing you as action
+			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
+			if (c != null) {
+				for (int i = 0; i < g.grid.size(); i++) {
+					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
+							.forEach(newOver);
+				}
+			}
+		}
+	}
+	/**
+	 * @brief Check if the next elements of the cell compose the rule
+	 * @param c cell potientially a rule
+	 * @param d valid direction of reading a rule
+	 * @param identity which type of rule cell it is (word, operator or action)
+	 */
 	private Cell lookup(Cell c, Direction d, String identity) {
 		if (c != null && g.possibleToMove(d, c.getPositionX(), c.getPositionY()) && c.identity().equals(identity)) {
 			return g.grid.get(c.getPositionX() + d.x).get(c.getPositionY() + d.y);
 		}
 		return null;
 	}
-
+	/**
+	 * @brief Verify if it is a rule
+	 * @param c cell potientially a rule
+	 * @param d valid direction of reading a rule
+	 */
 	private ArrayList<Cell> verification(Cell c, Direction d) {
 		ArrayList<Cell> result = new ArrayList<Cell>();
 		// System.out.println("commence " + c.toString() + " dir " + d.toString());

@@ -150,6 +150,9 @@ public class Grid {
 		case "rock" -> new Word(data, x, y);
 		case "flag" -> new Word(data, x, y);
 		case "wall" -> new Word(data, x, y);
+		case "lava" -> new Word(data, x, y);
+		case "skull" -> new Word(data, x, y);
+		case "water" -> new Word(data, x, y);
 		default -> throw new IllegalArgumentException("Unexpected value: " + data);
 		};
 	}
@@ -168,6 +171,9 @@ public class Grid {
 		case "push" -> new Action(data, x, y);
 		case "win" -> new Action(data, x, y);
 		case "stop" -> new Action(data, x, y);
+		case "melt" -> new Action(data, x, y);
+		case "defeat" -> new Action(data, x, y);
+		case "sink" -> new Action(data, x, y);
 		default -> throw new IllegalArgumentException("Unexpected value: " + data);
 		};
 	}

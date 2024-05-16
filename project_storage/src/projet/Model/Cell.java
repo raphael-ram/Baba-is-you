@@ -22,6 +22,7 @@ public interface Cell {
 	public void setPushable(boolean b);
 	public void setStop(boolean b);
 	public void setWin(boolean b);
+	public void setOver(boolean b);
 	
 	default boolean isBaba(){
 		return false;

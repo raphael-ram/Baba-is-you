@@ -51,5 +51,7 @@ public class Element implements Cell{
 	}
 	public void setWin(boolean b) {
 	}
+	public void setOver(boolean b) {
+	}
 	
 }
