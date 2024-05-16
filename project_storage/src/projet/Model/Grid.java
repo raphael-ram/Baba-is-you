@@ -20,7 +20,7 @@ public class Grid {
 	public static ArrayList<ArrayList<Cell>> grid = new ArrayList<ArrayList<Cell>>();
 
 	/**
-	 * @brief Verify if the move is possible
+	 *  Verify if the move is possible
 	 * @param d  direction
 	 * @param x1 coordinates X
 	 * @param y1 coordinates Y
@@ -74,7 +74,7 @@ public class Grid {
 	}
 
 	/**
-	 * @brief Exchange cells
+	 *  Exchange cells
 	 * @param tmp     cell to switch with
 	 * @param initial cell
 	 * @param moveX   coordinate X of tmp
@@ -117,7 +117,7 @@ public class Grid {
 	}
 
 	/**
-	 * @brief To create Material element
+	 *  To create Material element
 	 * @param data string
 	 * @param x    coordinate X
 	 * @param y    coordinate Y
@@ -179,7 +179,7 @@ public class Grid {
 	}
 
 	/**
-	 * @brief Parse the data and determine its category for to transform it as a
+	 *  Parse the data and determine its category for to transform it as a
 	 *        cell
 	 * @param data string
 	 * @param x    coordinate X
