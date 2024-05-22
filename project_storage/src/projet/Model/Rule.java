@@ -17,8 +17,8 @@ public class Rule {
 	}
 
 	/**
-	 *  Research available rules in the games and configure the cells
-	 *        according to them
+	 * Research available rules in the games and configure the cells according to
+	 * them
 	 */
 	public void researchRule() {
 
@@ -30,14 +30,15 @@ public class Rule {
 				}
 			}
 		};
-		for (int i = 0; i < g.grid.size(); i++) {
-			g.grid.get(i).stream().filter(r -> r.isProperty()).forEach(applyRuleOnCells);
-		}
+		Grid.grid.stream().flatMap(List::stream).filter(r -> r.isProperty()).forEach(applyRuleOnCells); // on property only because we are looking for the element of a rule and according to them we apply what should be applied
+
 	}
+
 	/**
 	 * Apply rules on the cells if possible
+	 * 
 	 * @param c cell
-	 * @param d direction 
+	 * @param d direction
 	 */
 	private void rulesApplication(Cell c, Direction d) {
 		youRule(verification(c, d));
@@ -54,13 +55,12 @@ public class Rule {
 		Consumer<Cell> removeElement = s -> {
 			s.setBaba(false);
 		};
-		for (int i = 0; i < g.grid.size(); i++) {
-			g.grid.get(i).stream().forEach(removeElement);
-		}
+			Grid.grid.stream().flatMap(List::stream).forEach(removeElement);
 	}
 
 	/**
-	 *  Apply You action on the cell
+	 * Apply You action on the cell
+	 * 
 	 * @param rule the entire rule
 	 */
 	private void youRule(ArrayList<Cell> rule) {
@@ -72,93 +72,91 @@ public class Rule {
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null); // get word of this
 																																																// array
 			if (c != null) {
-				for (int i = 0; i < g.grid.size(); i++) {
-					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
-							.forEach(newPown);
-				}
+				Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
+						.forEach(newPown);
 			}
 		}
 	}
 
 	/**
-	 *  Deactivate Push action on the cells which it is applied on
+	 * Deactivate Push action on the cells which it is applied on
 	 */
 	private void deactivatePush() {
 		Consumer<Cell> removeElement = s -> {
-			s.isPushable();
+			s.setPushable(false);
 		};
-		for (int i = 0; i < g.grid.size(); i++) {
-			g.grid.get(i).stream().filter(r -> r.isMaterial()).forEach(removeElement);
-		}
+		Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).forEach(removeElement);
 	}
 
 	/**
-	 *  Apply Push action on the cell
+	 * Apply Push action on the cell
+	 * 
 	 * @param rule the entire rule
 	 */
 	private void pushRule(ArrayList<Cell> rule) {
+		
 		if (rule.stream().anyMatch(r -> r.property().equals("push"))) {// array containing push as action
+			//deactivatePush();
 			deactivatePush();
 			Consumer<Cell> newPush = s -> {
 				s.setPushable(true);
+				System.out.println("push s is " + s.toString());
+
 			};
 
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
-				for (int i = 0; i < g.grid.size(); i++) {
-					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
-							.forEach(newPush);
-				}
+				Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property())).forEach(newPush);
 			}
 		}
 	}
 
 	/**
-	 *  Deactivate Stop action on the cells which it is applied on
+	 * Deactivate Stop action on the cells which it is applied on
 	 */
 	private void deactivateStop() {
 		Consumer<Cell> removeElement = s -> {
 			s.setStop(false);
 		};
-		for (int i = 0; i < g.grid.size(); i++) {
-			g.grid.get(i).stream().filter(r -> r.isMaterial()).forEach(removeElement);
-		}
+		Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).forEach(removeElement);
 	}
 
 	/**
-	 *  Apply Stop action on the cell
+	 * Apply Stop action on the cell
+	 * 
 	 * @param rule the entire rule
 	 */
 	private void stopRule(ArrayList<Cell> rule) {
+		deactivateStop();
+
 		if (rule.stream().anyMatch(r -> r.property().equals("stop"))) { // array containing stop as action
-			deactivateStop();
+			System.out.println("ENther this");
 			Consumer<Cell> newStop = s -> {
 				s.setStop(true);
+				System.out.println("stop s is " + s.toString() + " gg " + s.isStop());
 			};
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
-				for (int i = 0; i < g.grid.size(); i++) {
-					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
-							.forEach(newStop);
-				}
+				Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
+						.forEach(newStop);
 			}
 		}
 	}
 
 	/**
-	 *  Deactivate Win action on the cells which it is applied on
+	 * Deactivate Win action on the cells which it is applied on
 	 */
 	private void deactivateWin() {
 		Consumer<Cell> removeElement = s -> {
 			s.setWin(false);
 		};
-		for (int i = 0; i < g.grid.size(); i++) {
-			g.grid.get(i).stream().filter(r -> r.isMaterial()).forEach(removeElement);
-		}
+		Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).forEach(removeElement);
+
 	}
 
 	/**
-	 *  Apply Win action on the cell
+	 * Apply Win action on the cell
+	 * 
 	 * @param rule the entire rule
 	 */
 	private void winRule(ArrayList<Cell> rule) {
@@ -166,31 +164,32 @@ public class Rule {
 			deactivateWin();
 			Consumer<Cell> newWin = s -> {
 				s.setWin(true);
+				System.out.println("win s is " + s.toString());
+
 			};
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
-				for (int i = 0; i < g.grid.size(); i++) {
-					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
-							.forEach(newWin);
-				}
+
+				Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
+						.forEach(newWin);
+
 			}
 		}
 	}
 
 	/**
-	 *  Deactivate Over action on the cells which it is applied on
+	 * Deactivate Over action on the cells which it is applied on
 	 */
 	private void deactivateOver() {
 		Consumer<Cell> removeElement = s -> {
 			s.setOver(false);
 		};
-		for (int i = 0; i < g.grid.size(); i++) {
-			g.grid.get(i).stream().filter(r -> r.isMaterial()).forEach(removeElement);
-		}
+		Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).forEach(removeElement);
 	}
 
 	/**
-	 *  Apply Over(defeat, melt, sink) action on the cell
+	 * Apply Over(defeat, melt, sink) action on the cell
+	 * 
 	 * @param rule the entire rule
 	 */
 	private void overRule(ArrayList<Cell> rule) {
@@ -202,29 +201,28 @@ public class Rule {
 			};
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
-				for (int i = 0; i < g.grid.size(); i++) {
-					g.grid.get(i).stream().filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property()))
-							.forEach(newOver);
-				}
+				Grid.grid.stream().flatMap(List::stream).filter(r -> r.isMaterial()).filter(r -> r.property().equals(c.property())).forEach(newOver);
 			}
 		}
 	}
 
 	/**
-	 *  Check if the next elements of the cell compose the rule
+	 * Check if the next elements of the cell compose the rule
+	 * 
 	 * @param c        cell potientially a rule
 	 * @param d        valid direction of reading a rule
 	 * @param identity which type of rule cell it is (word, operator or action)
 	 */
 	private Cell lookup(Cell c, Direction d, String identity) {
-		if (c != null && g.possibleToMove(d, c.getPositionX(), c.getPositionY()) && c.identity().equals(identity)) {
-			return g.grid.get(c.getPositionX() + d.x).get(c.getPositionY() + d.y);
+		if (c != null && Grid.possibleToMove(d, c.getPositionX(), c.getPositionY()) && c.identity().equals(identity)) {
+			return Grid.grid.get(c.getPositionX() + d.x).get(c.getPositionY() + d.y);
 		}
 		return null;
 	}
 
 	/**
 	 * Verify if it is a rule
+	 * 
 	 * @param c cell potientially a rule
 	 * @param d valid direction of reading a rule
 	 */

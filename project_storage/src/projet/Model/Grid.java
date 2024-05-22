@@ -15,10 +15,12 @@ public class Grid {
 	 * according to the level The toString is particular ()
 	 */
 
-	private final int nbLines = 20;
-	private final int nbColumns = 20;
+	private final static int nbLines = 20;
+	private final static int nbColumns = 20;
 	public static ArrayList<ArrayList<Cell>> grid = new ArrayList<ArrayList<Cell>>();
 
+	
+	
 	/**
 	 *  Verify if the move is possible
 	 * @param d  direction
@@ -26,11 +28,11 @@ public class Grid {
 	 * @param y1 coordinates Y
 	 * @return
 	 */
-	public boolean possibleToMove(Direction d, int x1, int y1) {
+	public static boolean possibleToMove(Direction d, int x1, int y1) {
 		return !(x1 < 0 || x1 > (nbLines - 1) || y1 > (nbColumns - 1) || y1 < 0);
 	}
 
-	public void movement(Direction d, Cell cell) {
+	public static boolean movement(Direction d, Cell cell) {
 		var cellX = cell.getPositionX();// initial coordinates XY of the cell and his potential next coordinates
 		var cellY = cell.getPositionY();
 		var moveX = d.x + cell.getPositionX();
@@ -38,8 +40,12 @@ public class Grid {
 
 		if (possibleToMove(d, moveX, moveY)) {// check if movement is possible
 			Cell tmp = grid.get(moveX).get(moveY);
+			System.out.println("oui stop" + tmp.toString() + "pp "+ tmp.isStop());
+
 			if (tmp.isStop() == false) {
-				if (tmp.isPushable() == false) { // if it is an element it is a simple push
+				System.out.println("oui push" + tmp.toString() + "pp "+ tmp.isPushable());
+				if (tmp.isPushable() == false) { 
+					// if it is an element it is a simple push
 					exchange(tmp, cell, moveX, moveY, cellX, cellY);
 				} else {
 					if (possibleToMove(d, moveX + d.x, moveX + d.x)) {// check element forward to make a double
@@ -47,10 +53,13 @@ public class Grid {
 						forward(nextTmp, tmp, cell, moveX + d.x, moveY + d.y, moveX, moveY, cellX, cellY);
 					}
 				}
-			} else if (tmp.isWin() == true) {System.out.println("Partie gagnée");}
-			System.out.println("Pas de mouvement possible -> element stop");
+			}  
+			if (cell.isWin() == true) { System.out.println("Partie gagnée");return true;}
 		} else { System.out.println("Pas de mouvement possible");}
+			return false;
+			
 	}
+		
 
 	/**
 	 * 
@@ -65,9 +74,9 @@ public class Grid {
 	 * @param x3      coordinate X of cell
 	 * @param y3      coordinate Y of cell
 	 */
-	public void forward(Cell nextTmp, Cell tmp, Cell cell, int x1, int y1, int x2, int y2, int x3, int y3) {
+	public static void forward(Cell nextTmp, Cell tmp, Cell cell, int x1, int y1, int x2, int y2, int x3, int y3) {
 
-		if (nextTmp.isPushable() == false) {
+		if (tmp.isPushable() == true || (nextTmp.isPushable() == false && tmp.isProperty() == true )) {
 			exchange(nextTmp, tmp, x1, y1, x2, y2);
 			exchange(nextTmp, cell, x2, y2, x3, y3);
 		}
@@ -82,11 +91,12 @@ public class Grid {
 	 * @param cellX   coordinate X of cell
 	 * @param cellY   coordinate y of cell
 	 */
-	public void exchange(Cell tmp, Cell cell, int moveX, int moveY, int cellX, int cellY) {
+	public static void exchange(Cell tmp, Cell cell, int moveX, int moveY, int cellX, int cellY) {
 		if (tmp.isWin()) {
 			System.out.println("JEU gagné");
 			grid.get(moveX).set(moveY, cell);
 			grid.get(cellX).set(cellY, new Element("*", cellX, cellY));
+			cell.setWin(true);
 		} else {
 			cell.update_position(moveX, moveY);
 			tmp.update_position(cellX, cellY);
@@ -132,6 +142,7 @@ public class Grid {
 		case "L" -> new Material("lava", x, y);
 		case "D" -> new Material("skull", x, y);
 		case "E" -> new Material("water", x, y);
+		case "F" -> new Material("fan", x, y);
 		default -> throw new IllegalArgumentException("Unexpected value: " + data);
 		};
 	}
@@ -153,6 +164,7 @@ public class Grid {
 		case "lava" -> new Word(data, x, y);
 		case "skull" -> new Word(data, x, y);
 		case "water" -> new Word(data, x, y);
+		case "fan" -> new Word(data, x, y);
 		default -> throw new IllegalArgumentException("Unexpected value: " + data);
 		};
 	}
@@ -174,6 +186,7 @@ public class Grid {
 		case "melt" -> new Action(data, x, y);
 		case "defeat" -> new Action(data, x, y);
 		case "sink" -> new Action(data, x, y);
+		case "reverse" -> new Action(data, x, y);
 		default -> throw new IllegalArgumentException("Unexpected value: " + data);
 		};
 	}
@@ -188,8 +201,8 @@ public class Grid {
 	 */
 	private static Cell classification(String data, int x, int y) {
 		var patternMaterial = Pattern.compile("(O|M|-|X)");
-		var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull)");
-		var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt)");
+		var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull|fan)");
+		var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt|reverse)");
 
 		if (patternMaterial.matcher(data).matches())
 			return materialFabric(data, x, y);

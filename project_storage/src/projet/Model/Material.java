@@ -10,6 +10,7 @@ public class Material implements Cell{
 	private boolean stopSetting;
 	private boolean winSetting;
 	private boolean overSetting;
+	
 	public Material(String cellName, int x, int y) {
 		this.babaSetting = false;
 		this.pushSetting = false;
@@ -44,7 +45,7 @@ public class Material implements Cell{
 	}
 	
 	@Override
-	public boolean isBaba() {
+	public boolean isPawn() {
 		return this.babaSetting;
 	}
 	

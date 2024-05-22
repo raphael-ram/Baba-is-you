@@ -24,7 +24,7 @@ public interface Cell {
 	public void setWin(boolean b);
 	public void setOver(boolean b);
 	
-	default boolean isBaba(){
+	default boolean isPawn(){
 		return false;
 	}
 	
