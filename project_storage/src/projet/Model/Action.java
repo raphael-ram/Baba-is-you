@@ -71,5 +71,7 @@ public class Action implements Cell {
 	}
 	public void setOver(boolean b) {
 	}
+	public void setReverse(boolean b) {
+	}
 	
 }

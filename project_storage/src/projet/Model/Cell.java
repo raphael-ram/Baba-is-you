@@ -23,6 +23,7 @@ public interface Cell {
 	public void setStop(boolean b);
 	public void setWin(boolean b);
 	public void setOver(boolean b);
+	public void setReverse(boolean b);
 	
 	default boolean isPawn(){
 		return false;
@@ -31,8 +32,15 @@ public interface Cell {
 	default boolean isElement(){
 		return false;
 	}
+	default boolean isOver(){
+		return false;
+	}
 	
 	default boolean isWin(){
+		return false;
+	}
+	
+	default boolean isReverse(){
 		return false;
 	}
 	

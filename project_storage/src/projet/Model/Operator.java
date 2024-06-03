@@ -72,5 +72,7 @@ public class Operator implements Cell{
 	}
 	public void setOver(boolean b) {
 	}
+	public void setReverse(boolean b) {
+	}
 	
 }
