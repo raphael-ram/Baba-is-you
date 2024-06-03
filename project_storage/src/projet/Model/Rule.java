@@ -27,7 +27,7 @@ public class Rule {
 		Consumer<Cell> applyRuleOnCells = s -> {
 			for (Direction d : directions) {
 				if (verification(s, d) != null) {
-					System.out.println("WOLOLOLOO" + verification(s, d).toString());
+					//System.out.println("WOLOLOLOO" + verification(s, d).toString());
 					rules.add(verification(s, d));
 				}
 			}
@@ -129,7 +129,7 @@ public class Rule {
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
 				Consumer<LinkedList<Cell>> makeElementPushable = p -> {
-					if ((p.getFirst().isElement() && p.getFirst().property() != "*"
+					if ((p.getFirst().isElement() && !p.getFirst().property().equals("*")
 							&& p.getLast().property().equals(c.property()))) {
 						Cell tmp = p.getLast();
 						tmp.setPushable(true);
@@ -174,7 +174,7 @@ public class Rule {
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
 				Consumer<LinkedList<Cell>> makeElementStop= p -> {
-					if ((p.getFirst().isElement() && p.getFirst().property() != "*"
+					if ((p.getFirst().isElement() && !p.getFirst().property().equals("*")
 							&& p.getLast().property().equals(c.property()))) {
 						Cell tmp = p.getLast();
 						tmp.setStop(true);
@@ -218,7 +218,7 @@ public class Rule {
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
 				Consumer<LinkedList<Cell>> makeElementStop= p -> {
-					if ((p.getFirst().isElement() && p.getFirst().property() != "*"
+					if ((p.getFirst().isElement() && !p.getFirst().property().equals("*")
 							&& p.getLast().property().equals(c.property()))) {
 						Cell tmp = p.getLast();
 						tmp.setWin(true);
@@ -243,6 +243,7 @@ public class Rule {
 	private void deactivateYou() {
 		Consumer<LinkedList<Cell>> deactivatElement = s -> {
 			if (s.getFirst().isPawn() && s.getFirst().isMaterial()) {
+				System.err.println("before is " + s);
 				Cell first = s.getFirst();
 				s.removeLast();
 				s.addFirst(new Element(String.valueOf(first.property().charAt(0)).toUpperCase(), first.getPositionX(),
@@ -264,15 +265,15 @@ public class Rule {
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
 				Consumer<LinkedList<Cell>> makeElementStop= p -> {
-					if ((p.getFirst().isElement() && p.getFirst().property() != "*"
+					if ((p.getFirst().isElement() && !p.getFirst().property().equals("*")
 							&& p.getLast().property().equals(c.property()))) {
 						Cell tmp = p.getLast();
-						tmp.setBaba(true);
+						tmp.setPawn(true);
 						p.clear();
 						p.addFirst(tmp);
 						p.addLast(new Element("*", tmp.getPositionX(), tmp.getPositionY()));
 					} else if (p.getFirst().isMaterial() && p.getFirst().property().equals(c.property())) {
-						p.getFirst().setBaba(true);
+						p.getFirst().setPawn(true);
 					}
 				};
 				g.grid.stream().flatMap(List::stream).forEach(makeElementStop);
@@ -308,7 +309,7 @@ public class Rule {
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
 				Consumer<LinkedList<Cell>> makeElementStop= p -> {
-					if ((p.getFirst().isElement() && p.getFirst().property() != "*"
+					if ((p.getFirst().isElement() && !p.getFirst().property().equals("*")
 							&& p.getLast().property().equals(c.property()))) {
 						Cell tmp = p.getLast();
 						tmp.setReverse(true);
@@ -348,11 +349,12 @@ public class Rule {
 	 * @param rule contains a word, an operator and an action
 	 */
 	private void overRule(ArrayList<Cell> rule) {
-		if (rule.stream().anyMatch(r -> r.property().equals("over"))) {// array containing you as action
+		List overwords = List.of("melt", "sink", "defeat");
+		if (rule.stream().anyMatch(r -> overwords.contains(r.property()))) {// array containing you as action
 			Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
 			if (c != null) {
 				Consumer<LinkedList<Cell>> makeElementStop= p -> {
-					if ((p.getFirst().isElement() && p.getFirst().property() != "*"
+					if ((p.getFirst().isElement() && !p.getFirst().property().equals("*")
 							&& p.getLast().property().equals(c.property()))) {
 						Cell tmp = p.getLast();
 						tmp.setOver(true);

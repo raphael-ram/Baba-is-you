@@ -26,6 +26,7 @@ public class Element implements Cell{
 	public String property() {
 		return this.cellName;
 	}
+	
 	@Override
 	public boolean isElement(){
 		return true;
@@ -43,7 +44,7 @@ public class Element implements Cell{
 	}
 	
 	
-	public void setBaba(boolean b) {
+	public void setPawn(boolean b) {
 	}
 	public void setReverse(boolean b) {
 	}

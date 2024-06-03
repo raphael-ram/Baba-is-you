@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import projet.ControllerConsole.Console;
+import projet.Model.Behaviour;
 import projet.Model.Cell;
 import projet.Model.Direction;
 import projet.Model.Grid;
@@ -17,16 +18,35 @@ public class Main {
 		Console console = new Console();
 		console.startGame();
 
-//		Grid g = new Grid();
-//		
-//		Grid.launchingData(Path.of("src/external/level1.txt"));
-//		System.out.println(g.toString());
+		//Grid g = new Grid();
+		
+//		g.launchingData(Path.of("src/external/level1.txt"));
+//		Behaviour behaviour = new Behaviour(g);
+//		behaviour.process();
+		
+		
+		//System.out.println(g.toString());
 //		Scanner monObj = new Scanner(System.in);
 //		System.out.println("Choisiez le direction de deplacement: U(up), D(down), L(left), et R(right).");
 //		String direction = monObj.nextLine();
 //		Cell pown = null;
 //		Rule rule = new Rule(g);
-//		rule.researchRule();
+//		rule.rulesApplication();
+		
+		//Behaviour behaviour = new Behaviour(g);
+		
+		
+		
+		
+		
+		//behaviour.process();
+		
+		
+		
+		
+		
+		
+		
 //		System.out.println(g.grid.stream().flatMap(List::stream).filter(r -> r.isPawn()).toList());
 //		ArrayList<Cell> cep = new ArrayList<>();
 //		Collections.addAll(cep, Grid.grid.get(18).get(2), Grid.grid.get(1).get(16), Grid.grid.get(1).get(17));

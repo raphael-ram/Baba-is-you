@@ -18,7 +18,7 @@ public interface Cell {
 
 	public String property();
 	
-	public void setBaba(boolean b);
+	public void setPawn(boolean b);
 	public void setPushable(boolean b);
 	public void setStop(boolean b);
 	public void setWin(boolean b);

@@ -186,6 +186,9 @@ public class Grid {
 			for (LinkedList<Cell> cellList : row) {
 				if (!cellList.isEmpty()) {
 					result.append(cellList.getFirst()).append("\t");
+//					if(cellList.getFirst().property().equals("*")) {
+//						System.err.println("Here is " + cellList.getFirst().isElement() + " x : " + cellList.getFirst().getPositionX() + " y " +cellList.getFirst().getPositionY() );
+//					}
 				}
 			}
 			result.append("\n");

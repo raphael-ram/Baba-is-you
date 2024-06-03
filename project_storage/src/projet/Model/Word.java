@@ -65,7 +65,7 @@ public class Word implements Cell{
 		return "" + this.cellName.charAt(0);
 	}
 	
-	public void setBaba(boolean b) {
+	public void setPawn(boolean b) {
 	}
 	public void setPushable(boolean b) {
 	}

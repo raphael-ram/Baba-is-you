@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Material implements Cell {
 	private String cellName;
 	private int posX, posY;
-	private boolean babaSetting;
+	private boolean pawnSetting;
 	private boolean pushSetting;
 	private boolean stopSetting;
 	private boolean winSetting;
@@ -15,17 +15,17 @@ public class Material implements Cell {
 	private boolean elementSetting;
 
 	public Material(String cellName, int x, int y) {
-		this.babaSetting = false;
+		this.pawnSetting = false;
 		this.reverseSetting = false;
 		this.pushSetting = false;
 		this.stopSetting = false;
 		this.winSetting = false;
 		this.overSetting = false;
+		this.elementSetting = true;
 		Objects.requireNonNull(cellName);
 		this.cellName = cellName;
 		this.posX = x;
 		this.posY = y;
-		this.elementSetting = false;
 	}
 
 	@Override
@@ -51,31 +51,43 @@ public class Material implements Cell {
 
 	@Override
 	public boolean isPawn() {
-		return this.babaSetting;
+		if(this.pawnSetting)
+			this.elementSetting = false;
+		return this.pawnSetting;
 	}
 	
 	@Override
 	public boolean isOver() {
+		if(this.overSetting)
+			this.elementSetting = false;
 		return this.overSetting;
 	}
 
 	@Override
 	public boolean isPushable() {
+		if(this.pushSetting)
+			this.elementSetting = false;
 		return this.pushSetting;
 	}
 
 	@Override
 	public boolean isStop() {
+		if(this.stopSetting)
+			this.elementSetting = false;
 		return this.stopSetting;
 	}
 
 	@Override
 	public boolean isWin() {
+		if(this.winSetting)
+			this.elementSetting = false;
 		return this.winSetting;
 	}
 	
 	@Override
 	public boolean isReverse() {
+		if(this.reverseSetting)
+			this.elementSetting = false;
 		return this.reverseSetting;
 	}
 
@@ -94,27 +106,39 @@ public class Material implements Cell {
 		return this.elementSetting;
 	}
 
-	public void setBaba(boolean b) {
-		this.babaSetting = b;
+	public void setPawn(boolean b) {
+		if(b)
+			this.elementSetting = false;
+		this.pawnSetting = b;
 	}
 
 	public void setPushable(boolean b) {
+		if(b)
+			this.elementSetting = false;
 		this.pushSetting = b;
 	}
 
 	public void setStop(boolean b) {
+		if(b)
+			this.elementSetting = false;
 		this.stopSetting = b;
 	}
 
 	public void setWin(boolean b) {
+		if(b)
+			this.elementSetting = false;
 		this.winSetting = b;
 	}
 	
 	public void setReverse(boolean b) {
+		if(b)
+			this.elementSetting = false;
 		this.reverseSetting = b;
 	}
 
 	public void setOver(boolean b) {
+		if(b)
+			this.elementSetting = false;
 		this.overSetting = b;
 	}
 }

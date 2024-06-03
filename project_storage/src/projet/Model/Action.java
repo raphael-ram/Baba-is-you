@@ -61,7 +61,7 @@ public class Action implements Cell {
 		return true;
 	}
 	
-	public void setBaba(boolean b) {
+	public void setPawn(boolean b) {
 	}
 	public void setPushable(boolean b) {
 	}
