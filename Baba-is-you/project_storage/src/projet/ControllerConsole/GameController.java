@@ -120,19 +120,29 @@ public class GameController {
         System.out.println("=== Baba Is You (GUI) ===");
         System.out.println("Choose a level:");
         System.out.println("1. Level 1");
-        System.out.println("2. Custom Level (level_custom.txt)");
-        System.out.println("3. Enter custom path");
+        System.out.println("2. Level 2");
+        System.out.println("3. Level 3 (Melt/Hot)");
+        System.out.println("4. Level 4 (Sink)");
+        System.out.println("5. Level 5 (Defeat)");
+        System.out.println("6. Level 6 (Pull)");
+        System.out.println("7. Custom Level (Complex)");
+        System.out.println("8. Enter custom path");
         System.out.print("> ");
 
         String choice = scanner.nextLine();
         switch (choice) {
             case "1" -> selectedLevelPath = "src/external/level1.txt";
-            case "2" -> selectedLevelPath = "src/external/level_custom.txt";
-            case "3" -> {
+            case "2" -> selectedLevelPath = "src/external/level2.txt";
+            case "3" -> selectedLevelPath = "src/external/level3.txt";
+            case "4" -> selectedLevelPath = "src/external/level4.txt";
+            case "5" -> selectedLevelPath = "src/external/level5.txt";
+            case "6" -> selectedLevelPath = "src/external/level6.txt";
+            case "7" -> selectedLevelPath = "src/external/level_custom.txt";
+            case "8" -> {
                 System.out.print("Enter path: ");
                 selectedLevelPath = scanner.nextLine();
             }
-            default -> System.out.println("Invalid choice, defaulting to Custom Level.");
+            default -> System.out.println("Invalid choice, defaulting to Level 1.");
         }
 
         Application.run(Color.BLACK, GameController::startGame);

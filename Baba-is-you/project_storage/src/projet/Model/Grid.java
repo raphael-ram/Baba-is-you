@@ -138,7 +138,7 @@ public class Grid {
      */
     private static Cell actionFabric(String data, int x, int y) {
         return switch (data) {
-            case "you", "push", "win", "stop", "melt", "defeat", "sink", "reverse", "pull" -> new Action(data, x, y);
+            case "you", "push", "win", "stop", "melt", "defeat", "sink", "reverse", "pull", "hot" -> new Action(data, x, y);
             default -> throw new IllegalArgumentException("Unexpected value: " + data);
         };
     }
@@ -152,9 +152,9 @@ public class Grid {
      * @return cell
      */
     private static Cell classification(String data, int x, int y) {
-        var patternMaterial = Pattern.compile("(O|M|-|X|T|B)");
+        var patternMaterial = Pattern.compile("(O|M|-|X|T|B|L|D|E|F)");
         var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull|fan|box)");
-        var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt|reverse|pull)");
+        var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt|reverse|pull|hot)");
 
         if (patternMaterial.matcher(data).matches())
             return materialFabric(data, x, y);
