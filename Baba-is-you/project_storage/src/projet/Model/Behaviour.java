@@ -36,22 +36,69 @@ public class Behaviour {
         return result;
     }
 
+    private boolean applyMove(Cell mover, int targetX, int targetY, LinkedList<Cell> moverList) {
+        Cell target = g.grid.get(targetX).get(targetY).getFirst();
+
+        // Interactions
+        if (target.isSink()) {
+             moverList.removeFirst();
+             g.grid.get(targetX).get(targetY).removeFirst();
+             if (mover.isPawn()) this.play = "loose";
+             return true;
+        }
+        if (mover.isMelt() && target.isHot()) {
+             moverList.removeFirst();
+             if (mover.isPawn()) this.play = "loose";
+             return true;
+        }
+        if (target.isDefeat() && mover.isPawn()) {
+             moverList.removeFirst();
+             this.play = "loose";
+             return true;
+        }
+        if (target.isWin() && mover.isPawn()) {
+             g.grid.get(targetX).get(targetY).addFirst(mover);
+             mover.update_position(targetX, targetY);
+             moverList.removeFirst();
+             this.play = "win";
+             return true;
+        }
+        
+        // Blocking
+        if (target.isStop()) return false;
+        
+        // Move
+        g.grid.get(targetX).get(targetY).addFirst(mover);
+        mover.update_position(targetX, targetY);
+        moverList.removeFirst();
+        return true;
+    }
+
     private boolean move(int moveX, int moveY, LinkedList<Cell> l, Direction d) {
         if (g.possibleToMove(d, moveX, moveY)) {
-            if (g.grid.get(moveX).get(moveY).getFirst().isElement() && !g.grid.get(moveX).get(moveY).getFirst().isStop()) {
-                g.grid.get(moveX).get(moveY).addFirst(l.getFirst());
-                g.grid.get(moveX).get(moveY).getFirst().update_position(moveX, moveY);
-                l.removeFirst();
-                return true;
-            }
-            if (!g.grid.get(moveX).get(moveY).getFirst().isPushable() && !g.grid.get(moveX).get(moveY).getFirst().isStop()) {
-                g.grid.get(moveX).get(moveY).addFirst(l.getFirst());
-                g.grid.get(moveX).get(moveY).getFirst().update_position(moveX, moveY);
-                l.removeFirst();
+            int oldX = l.getFirst().getPositionX();
+            int oldY = l.getFirst().getPositionY();
+            
+            if (applyMove(l.getFirst(), moveX, moveY, l)) {
+                pull(oldX, oldY, d);
                 return true;
             }
         }
         return false;
+    }
+
+    private void pull(int targetX, int targetY, Direction d) {
+        int sourceX = targetX - d.x;
+        int sourceY = targetY - d.y;
+        if (g.possibleToMove(d, sourceX, sourceY)) {
+            LinkedList<Cell> sourceList = g.grid.get(sourceX).get(sourceY);
+            if (!sourceList.isEmpty() && sourceList.getFirst().isPull() && sourceList.getFirst().isMaterial()) {
+                 Cell c = sourceList.getFirst();
+                 if (applyMove(c, targetX, targetY, sourceList)) {
+                     pull(sourceX, sourceY, d);
+                 }
+            }
+        }
     }
 
     public boolean push(int moveX, int moveY, LinkedList<Cell> l, Direction d) {
@@ -70,28 +117,6 @@ public class Behaviour {
         return false;
     }
 
-    public boolean win(int moveX, int moveY, LinkedList<Cell> l, Direction d) {
-        if (g.possibleToMove(d, moveX, moveY)) {
-            if (g.grid.get(moveX).get(moveY).getFirst().isWin()) {
-                g.grid.get(moveX).get(moveY).addFirst(l.getFirst());
-                g.grid.get(moveX).get(moveY).getFirst().update_position(moveX, moveY);
-                l.removeFirst();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean over(int moveX, int moveY, LinkedList<Cell> l, Direction d) {
-        if (g.possibleToMove(d, moveX, moveY)) {
-            if (g.grid.get(moveX).get(moveY).getFirst().isOver()) {
-                l.removeFirst();
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void movementManager(Direction d) {
         pawns = retrieveCurrentPawn();
         List<LinkedList<Cell>> currentPawns = new ArrayList<>(pawns);
@@ -99,13 +124,6 @@ public class Behaviour {
             var moveX = s.getFirst().getPositionX() + d.x;
             var moveY = s.getFirst().getPositionY() + d.y;
 
-            if (over(moveX, moveY, s, d)) {
-                continue;
-            }
-            if (win(moveX, moveY, s, d)) {
-                this.play = "win";
-                continue;
-            }
             if (push(moveX, moveY, s, d)) {
                 continue;
             }

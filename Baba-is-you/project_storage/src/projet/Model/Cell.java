@@ -24,6 +24,11 @@ public interface Cell {
 	public void setWin(boolean b);
 	public void setOver(boolean b);
 	public void setReverse(boolean b);
+	default void setMelt(boolean b) {}
+	default void setHot(boolean b) {}
+	default void setSink(boolean b) {}
+	default void setDefeat(boolean b) {}
+	default void setPull(boolean b) {}
 	
 	default boolean isPawn(){
 		return false;
@@ -41,6 +46,26 @@ public interface Cell {
 	}
 	
 	default boolean isReverse(){
+		return false;
+	}
+	
+	default boolean isMelt(){
+		return false;
+	}
+	
+	default boolean isHot(){
+		return false;
+	}
+	
+	default boolean isSink(){
+		return false;
+	}
+	
+	default boolean isDefeat(){
+		return false;
+	}
+	
+	default boolean isPull(){
 		return false;
 	}
 	

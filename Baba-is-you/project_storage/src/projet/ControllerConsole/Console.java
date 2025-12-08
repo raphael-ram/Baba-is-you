@@ -64,6 +64,8 @@ public class Console {
 			default:
 				System.out.println("Donnée saisie incorrecte. Relancez le programme pour recommencer. A la prochaine !");
 			}
+			
+			if (g != null) {
 				System.out.println("'Bout to start");
 				System.out.println(g.toString());
 
@@ -75,6 +77,7 @@ public class Console {
 				while (play.equals("continue")) {
 
 					String direction = scanner.nextLine();
+					if (direction.equals("exit")) break;
 					// Perform movement based on the chosen direction
 					if (direction.equals("u")) {
 						behaviour.movementManager(Direction.Up);
@@ -95,8 +98,10 @@ public class Console {
 					}
 
 				}
+				}
 			}
 		}
+
 
 	
 
@@ -113,12 +118,12 @@ public class Console {
 
 	public Grid redirectionLevel(String level) throws IOException {
 		return switch (level) {
-		case "level 1" -> runningGame(Path.of("project_storage/src/external/level1.txt"));
-		case "level 2" -> runningGame(Path.of("project_storage/src/external/src/external/level2.txt"));
-		case "level 3" -> runningGame(Path.of("project_storage/src/external/src/external/level3.txt"));
-		case "level 4" -> runningGame(Path.of("project_storage/src/external/src/external/level4.txt"));
-		case "level 5" -> runningGame(Path.of("project_storage/src/external/src/external/level5.txt"));
-		case "level 6" -> runningGame(Path.of("project_storage/src/external/src/external/level6.txt"));
+		case "level 1" -> runningGame(Path.of("src/external/level1.txt"));
+		case "level 2" -> runningGame(Path.of("src/external/level2.txt"));
+		case "level 3" -> runningGame(Path.of("src/external/level3.txt"));
+		case "level 4" -> runningGame(Path.of("src/external/level4.txt"));
+		case "level 5" -> runningGame(Path.of("src/external/level5.txt"));
+		case "level 6" -> runningGame(Path.of("src/external/level6.txt"));
 		default -> throw new IllegalArgumentException("Vous avez saisi un niveau de jeu incorrect. Au revoir !");
 		};
 	}

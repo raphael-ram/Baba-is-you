@@ -77,7 +77,11 @@ public class Rule {
             pushRule(s);
             youRule(s);
             winRule(s);
-            overRule(s);
+            meltRule(s);
+            hotRule(s);
+            sinkRule(s);
+            defeatRule(s);
+            pullRule(s);
             stopRule(s);
             reverseRule(s);
             transformRule(s); // Apply transformation rules
@@ -89,7 +93,11 @@ public class Rule {
      * Deactivate all the existing rules
      */
     public void deactivateAllRules() {
-        deactivateOver();
+        deactivateMelt();
+        deactivateHot();
+        deactivateSink();
+        deactivateDefeat();
+        deactivatePull();
         deactivatePush();
         deactivateReverse();
         deactivateStop();
@@ -258,34 +266,117 @@ public class Rule {
     }
 
     /**
-     * Deactivate Over action on the cells which it is applied on
+     * Deactivate Melt action
      */
-    private void deactivateOver() {
+    private void deactivateMelt() {
         Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isOver() && s.getFirst().isMaterial()) {
-                Cell first = s.getFirst();
-                first.setOver(false);
+            if (s.getFirst().isMelt() && s.getFirst().isMaterial()) {
+                s.getFirst().setMelt(false);
             }
         };
         g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
     }
 
     /**
-     * Apply Over action on the cell
-     *
-     * @param rule contains a word, an operator and an action
+     * Apply Melt action
      */
-    private void overRule(ArrayList<Cell> rule) {
-        List<String> overwords = List.of("melt", "sink", "defeat");
-        if (rule.stream().anyMatch(r -> overwords.contains(r.property()))) {
+    private void meltRule(ArrayList<Cell> rule) {
+        if (rule.stream().anyMatch(r -> r.property().equals("melt"))) {
             Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
             if (c != null) {
-                Consumer<LinkedList<Cell>> makeElementOver = p -> {
+                Consumer<LinkedList<Cell>> makeElementMelt = p -> {
                     if (p.getFirst().property().equals(c.property())) {
-                        p.getFirst().setOver(true);
+                        p.getFirst().setMelt(true);
                     }
                 };
-                g.grid.stream().flatMap(List::stream).forEach(makeElementOver);
+                g.grid.stream().flatMap(List::stream).forEach(makeElementMelt);
+            }
+        }
+    }
+
+    /**
+     * Deactivate Hot action
+     */
+    private void deactivateHot() {
+        Consumer<LinkedList<Cell>> deactivatElement = s -> {
+            if (s.getFirst().isHot() && s.getFirst().isMaterial()) {
+                s.getFirst().setHot(false);
+            }
+        };
+        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
+    }
+
+    /**
+     * Apply Hot action
+     */
+    private void hotRule(ArrayList<Cell> rule) {
+        if (rule.stream().anyMatch(r -> r.property().equals("hot"))) {
+            Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
+            if (c != null) {
+                Consumer<LinkedList<Cell>> makeElementHot = p -> {
+                    if (p.getFirst().property().equals(c.property())) {
+                        p.getFirst().setHot(true);
+                    }
+                };
+                g.grid.stream().flatMap(List::stream).forEach(makeElementHot);
+            }
+        }
+    }
+
+    /**
+     * Deactivate Sink action
+     */
+    private void deactivateSink() {
+        Consumer<LinkedList<Cell>> deactivatElement = s -> {
+            if (s.getFirst().isSink() && s.getFirst().isMaterial()) {
+                s.getFirst().setSink(false);
+            }
+        };
+        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
+    }
+
+    /**
+     * Apply Sink action
+     */
+    private void sinkRule(ArrayList<Cell> rule) {
+        if (rule.stream().anyMatch(r -> r.property().equals("sink"))) {
+            Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
+            if (c != null) {
+                Consumer<LinkedList<Cell>> makeElementSink = p -> {
+                    if (p.getFirst().property().equals(c.property())) {
+                        p.getFirst().setSink(true);
+                    }
+                };
+                g.grid.stream().flatMap(List::stream).forEach(makeElementSink);
+            }
+        }
+    }
+
+    /**
+     * Deactivate Defeat action
+     */
+    private void deactivateDefeat() {
+        Consumer<LinkedList<Cell>> deactivatElement = s -> {
+            if (s.getFirst().isDefeat() && s.getFirst().isMaterial()) {
+                s.getFirst().setDefeat(false);
+            }
+        };
+        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
+    }
+
+    /**
+     * Apply Defeat action
+     */
+    private void defeatRule(ArrayList<Cell> rule) {
+        if (rule.stream().anyMatch(r -> r.property().equals("defeat"))) {
+            Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
+            if (c != null) {
+                Consumer<LinkedList<Cell>> makeElementDefeat = p -> {
+                    if (p.getFirst().property().equals(c.property())) {
+                        p.getFirst().setDefeat(true);
+                    }
+                };
+                g.grid.stream().flatMap(List::stream).forEach(makeElementDefeat);
             }
         }
     }
@@ -319,5 +410,33 @@ public class Rule {
             activeRules.add(ruleStr.toString().trim());
         }
         return activeRules;
+    }
+    /**
+     * Deactivate Pull action
+     */
+    private void deactivatePull() {
+        Consumer<LinkedList<Cell>> deactivatElement = s -> {
+            if (s.getFirst().isPull() && s.getFirst().isMaterial()) {
+                s.getFirst().setPull(false);
+            }
+        };
+        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
+    }
+
+    /**
+     * Apply Pull action
+     */
+    private void pullRule(ArrayList<Cell> rule) {
+        if (rule.stream().anyMatch(r -> r.property().equals("pull"))) {
+            Cell c = rule.stream().filter(r -> r.identity().equals("word")).findFirst().orElse(null);
+            if (c != null) {
+                Consumer<LinkedList<Cell>> makeElementPull = p -> {
+                    if (p.getFirst().property().equals(c.property())) {
+                        p.getFirst().setPull(true);
+                    }
+                };
+                g.grid.stream().flatMap(List::stream).forEach(makeElementPull);
+            }
+        }
     }
 }

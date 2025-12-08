@@ -66,7 +66,7 @@ public class GameController {
         
         // Charger les données du niveau avant de créer la vue pour assurer les dimensions valides
         try {
-            grid.launchingData(Paths.get("project_storage/src/external/level1.txt"));
+            grid.launchingData(Paths.get(selectedLevelPath));
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -87,7 +87,7 @@ public class GameController {
 
     private static void initializeGame(ImageLoader loader, Grid grid, Behaviour behaviour, GameView view) throws Exception {
         // Les données du niveau sont déjà chargées dans startGame()
-        loader.loadImages(Paths.get("project_storage/src/images"));
+        loader.loadImages(Paths.get("src/images"));
         behaviour.processing(); // Appliquer les règles initiales
         view.repaint();
     }
@@ -113,7 +113,28 @@ public class GameController {
         }
     }
 
+    private static String selectedLevelPath = "src/external/level_custom.txt";
+
     public static void main(String[] args) {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        System.out.println("=== Baba Is You (GUI) ===");
+        System.out.println("Choose a level:");
+        System.out.println("1. Level 1");
+        System.out.println("2. Custom Level (level_custom.txt)");
+        System.out.println("3. Enter custom path");
+        System.out.print("> ");
+
+        String choice = scanner.nextLine();
+        switch (choice) {
+            case "1" -> selectedLevelPath = "src/external/level1.txt";
+            case "2" -> selectedLevelPath = "src/external/level_custom.txt";
+            case "3" -> {
+                System.out.print("Enter path: ");
+                selectedLevelPath = scanner.nextLine();
+            }
+            default -> System.out.println("Invalid choice, defaulting to Custom Level.");
+        }
+
         Application.run(Color.BLACK, GameController::startGame);
     }
 }

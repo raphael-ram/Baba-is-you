@@ -11,6 +11,11 @@ public class Material implements Cell {
 	private boolean winSetting;
 	private boolean overSetting;
 	private boolean reverseSetting;
+	private boolean meltSetting;
+	private boolean hotSetting;
+	private boolean sinkSetting;
+	private boolean defeatSetting;
+	private boolean pullSetting;
 	private boolean elementSetting;
 
 	public Material(String cellName, int x, int y) {
@@ -20,6 +25,11 @@ public class Material implements Cell {
 		this.stopSetting = false;
 		this.winSetting = false;
 		this.overSetting = false;
+		this.meltSetting = false;
+		this.hotSetting = false;
+		this.sinkSetting = false;
+		this.defeatSetting = false;
+		this.pullSetting = false;
 		this.elementSetting = true;
 		Objects.requireNonNull(cellName);
 		this.cellName = cellName;
@@ -139,5 +149,75 @@ public class Material implements Cell {
 		if(b)
 			this.elementSetting = false;
 		this.overSetting = b;
+	}
+
+	@Override
+	public boolean isMelt() {
+		if(this.meltSetting)
+			this.elementSetting = false;
+		return this.meltSetting;
+	}
+
+	@Override
+	public boolean isHot() {
+		if(this.hotSetting)
+			this.elementSetting = false;
+		return this.hotSetting;
+	}
+
+	@Override
+	public boolean isSink() {
+		if(this.sinkSetting)
+			this.elementSetting = false;
+		return this.sinkSetting;
+	}
+
+	@Override
+	public boolean isDefeat() {
+		if(this.defeatSetting)
+			this.elementSetting = false;
+		return this.defeatSetting;
+	}
+
+	@Override
+	public void setMelt(boolean b) {
+		if(b)
+			this.elementSetting = false;
+		this.meltSetting = b;
+	}
+
+	@Override
+	public void setHot(boolean b) {
+		if(b)
+			this.elementSetting = false;
+		this.hotSetting = b;
+	}
+
+	@Override
+	public void setSink(boolean b) {
+		if(b)
+			this.elementSetting = false;
+		this.sinkSetting = b;
+	}
+
+	@Override
+	public void setDefeat(boolean b) {
+		if(b)
+			this.elementSetting = false;
+		this.defeatSetting = b;
+	}
+
+	@Override
+	public boolean isPull() {
+		if(this.pullSetting)
+			this.elementSetting = false;
+		return this.pullSetting;
+	}
+
+	@Override
+	public void setPull(boolean b) {
+		if(b)
+			this.elementSetting = false;
+		this.pullSetting = b;
 	}
 }

@@ -108,6 +108,7 @@ public class Grid {
             case "E" -> new Material("water", x, y);
             case "T" -> new Material("tile", x, y);
             case "F" -> new Material("fan", x, y);
+            case "B" -> new Material("box", x, y);
             default -> throw new IllegalArgumentException("Unexpected value: " + data);
         };
     }
@@ -122,7 +123,7 @@ public class Grid {
      */
     private static Cell wordFabric(String data, int x, int y) {
         return switch (data) {
-            case "baba", "rock", "flag", "wall", "lava", "skull", "water", "fan" -> new Word(data, x, y);
+            case "baba", "rock", "flag", "wall", "lava", "skull", "water", "fan", "box" -> new Word(data, x, y);
             default -> throw new IllegalArgumentException("Unexpected value: " + data);
         };
     }
@@ -137,7 +138,7 @@ public class Grid {
      */
     private static Cell actionFabric(String data, int x, int y) {
         return switch (data) {
-            case "you", "push", "win", "stop", "melt", "defeat", "sink", "reverse" -> new Action(data, x, y);
+            case "you", "push", "win", "stop", "melt", "defeat", "sink", "reverse", "pull" -> new Action(data, x, y);
             default -> throw new IllegalArgumentException("Unexpected value: " + data);
         };
     }
@@ -151,9 +152,9 @@ public class Grid {
      * @return cell
      */
     private static Cell classification(String data, int x, int y) {
-        var patternMaterial = Pattern.compile("(O|M|-|X|T)");
-        var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull|fan)");
-        var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt|reverse)");
+        var patternMaterial = Pattern.compile("(O|M|-|X|T|B)");
+        var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull|fan|box)");
+        var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt|reverse|pull)");
 
         if (patternMaterial.matcher(data).matches())
             return materialFabric(data, x, y);
