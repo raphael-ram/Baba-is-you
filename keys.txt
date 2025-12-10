@@ -1,0 +1,45 @@
+Compiled from "KeyboardEvent.java"
+public final class com.github.forax.zen.KeyboardEvent$Key extends java.lang.Enum<com.github.forax.zen.KeyboardEvent$Key> {
+  public static final com.github.forax.zen.KeyboardEvent$Key META;
+  public static final com.github.forax.zen.KeyboardEvent$Key CTRL;
+  public static final com.github.forax.zen.KeyboardEvent$Key ALT;
+  public static final com.github.forax.zen.KeyboardEvent$Key SHIFT;
+  public static final com.github.forax.zen.KeyboardEvent$Key ALT_GR;
+  public static final com.github.forax.zen.KeyboardEvent$Key ESCAPE;
+  public static final com.github.forax.zen.KeyboardEvent$Key UP;
+  public static final com.github.forax.zen.KeyboardEvent$Key DOWN;
+  public static final com.github.forax.zen.KeyboardEvent$Key LEFT;
+  public static final com.github.forax.zen.KeyboardEvent$Key RIGHT;
+  public static final com.github.forax.zen.KeyboardEvent$Key SPACE;
+  public static final com.github.forax.zen.KeyboardEvent$Key A;
+  public static final com.github.forax.zen.KeyboardEvent$Key B;
+  public static final com.github.forax.zen.KeyboardEvent$Key C;
+  public static final com.github.forax.zen.KeyboardEvent$Key D;
+  public static final com.github.forax.zen.KeyboardEvent$Key E;
+  public static final com.github.forax.zen.KeyboardEvent$Key F;
+  public static final com.github.forax.zen.KeyboardEvent$Key G;
+  public static final com.github.forax.zen.KeyboardEvent$Key H;
+  public static final com.github.forax.zen.KeyboardEvent$Key I;
+  public static final com.github.forax.zen.KeyboardEvent$Key J;
+  public static final com.github.forax.zen.KeyboardEvent$Key K;
+  public static final com.github.forax.zen.KeyboardEvent$Key L;
+  public static final com.github.forax.zen.KeyboardEvent$Key M;
+  public static final com.github.forax.zen.KeyboardEvent$Key N;
+  public static final com.github.forax.zen.KeyboardEvent$Key O;
+  public static final com.github.forax.zen.KeyboardEvent$Key P;
+  public static final com.github.forax.zen.KeyboardEvent$Key Q;
+  public static final com.github.forax.zen.KeyboardEvent$Key R;
+  public static final com.github.forax.zen.KeyboardEvent$Key S;
+  public static final com.github.forax.zen.KeyboardEvent$Key T;
+  public static final com.github.forax.zen.KeyboardEvent$Key U;
+  public static final com.github.forax.zen.KeyboardEvent$Key V;
+  public static final com.github.forax.zen.KeyboardEvent$Key W;
+  public static final com.github.forax.zen.KeyboardEvent$Key X;
+  public static final com.github.forax.zen.KeyboardEvent$Key Y;
+  public static final com.github.forax.zen.KeyboardEvent$Key Z;
+  public static final com.github.forax.zen.KeyboardEvent$Key UNDEFINED;
+  public static com.github.forax.zen.KeyboardEvent$Key[] values();
+  public static com.github.forax.zen.KeyboardEvent$Key valueOf(java.lang.String);
+  static com.github.forax.zen.KeyboardEvent$Key key(int);
+  static {};
+}
