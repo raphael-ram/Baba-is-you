@@ -130,6 +130,7 @@ public class Behaviour {
         pawns = retrieveCurrentPawn();
         List<LinkedList<Cell>> currentPawns = new ArrayList<>(pawns);
         for (LinkedList<Cell> s : currentPawns) {
+            if (s.isEmpty() || !s.getFirst().isPawn()) continue;
             var moveX = s.getFirst().getPositionX() + d.x;
             var moveY = s.getFirst().getPositionY() + d.y;
 
@@ -141,12 +142,16 @@ public class Behaviour {
             }
         }
 
-        if (pawns.size() == 0) {
-            this.play = "loose";
-        }
-
         // Appliquer et afficher les règles après chaque déplacement
         processing();
+
+        // Check for lose after rules are re-evaluated
+        if (!"win".equals(this.play) && !"loose".equals(this.play)) {
+            ArrayList<LinkedList<Cell>> currentPawnsAfter = retrieveCurrentPawn();
+            if (currentPawnsAfter.isEmpty()) {
+                this.play = "loose";
+            }
+        }
     }
 
     // Méthode pour afficher la grille avec la liste des éléments dans chaque cellule

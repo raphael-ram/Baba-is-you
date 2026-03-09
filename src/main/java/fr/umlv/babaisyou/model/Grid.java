@@ -68,7 +68,7 @@ public class Grid {
                 throw new IOException("Resource not found: " + resourcePath);
             }
             try (var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream, java.nio.charset.StandardCharsets.UTF_8))) {
-                lines = reader.lines().toList();
+                lines = reader.lines().filter(l -> !l.isBlank()).toList();
             }
         }
 

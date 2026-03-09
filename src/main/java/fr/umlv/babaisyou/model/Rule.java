@@ -410,7 +410,7 @@ public class Rule {
      * @param rule contains a noun, an operator, and another noun
      */
     private void transformRule(ArrayList<Cell> rule) {
-        if (rule.size() == 4) {
+        if (rule.size() == 3) {
             Cell noun1 = rule.get(0);
             Cell noun2 = rule.get(2);
             if (noun1.identity().equals("word") && noun2.identity().equals("word")) {
