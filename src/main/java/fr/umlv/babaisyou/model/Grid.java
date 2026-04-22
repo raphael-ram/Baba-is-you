@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 public class Grid {
 
@@ -72,10 +71,10 @@ public class Grid {
             }
         }
 
-        // Determine the number of lines and columns
+        // Determine the number of lines and columns (space-separated single-char tokens)
         this.nbLines = lines.size();
         if (nbLines > 0) {
-            this.nbColumns = lines.get(0).split("_").length;
+            this.nbColumns = lines.get(0).trim().split("\\s+").length;
         } else {
             throw new IllegalArgumentException("Level file is empty.");
         }
@@ -85,101 +84,74 @@ public class Grid {
         // Parse each line and populate the grid
         for (int row = 0; row < nbLines; row++) {
             String line = lines.get(row);
-            String[] elements = line.split("_");
-
-            // Ensure the number of elements matches the number of columns
-            if (elements.length != nbColumns) {
-                throw new IllegalArgumentException("Inconsistent number of columns at row " + row);
-            }
+            String[] tokens = line.trim().split("\\s+");
 
             ArrayList<LinkedList<Cell>> gridRow = this.grid.get(row);
-            for (int col = 0; col < elements.length; col++) {
-                String element = elements[col].trim();
+            for (int col = 0; col < nbColumns; col++) {
+                String token = col < tokens.length ? tokens[col].trim() : "-";
                 LinkedList<Cell> cellList = gridRow.get(col);
-                Cell modifiedElement = classification(element, row, col);
+                Cell modifiedElement = classification(token, row, col);
                 cellList.addFirst(modifiedElement);
             }
         }
     }
 
     /**
-     * To create Material element
+     * Parse a single-character BabaIsYou token and return the matching Cell.
+     * Format: space-separated tokens, uppercase = entity, lowercase = word/property.
      *
-     * @param data string
-     * @param x    coordinate X
-     * @param y    coordinate Y
-     * @return cell
+     * Entities  (uppercase) : B=baba F=flag W=wall A=water S=skull L=lava R=rock T=tile N=smiley
+     * Noun words (lowercase): b=baba f=flag w=wall a=water s=skull l=lava r=rock n=smiley
+     * Operator              : i=is
+     * Properties            : y=you v=win t=stop p=push m=melt h=hot d=defeat k=sink u=jump
+     * Empty                 : - (or anything else)
      */
-    private static Cell materialFabric(String data, int x, int y) {
-        return switch (data) {
-            case "O" -> new Material("rock", x, y);
-            case "-" -> new Material("wall", x, y);
-            case "X" -> new Material("flag", x, y);
-            case "M" -> new Material("baba", x, y);
-            case "L" -> new Material("lava", x, y);
-            case "D" -> new Material("skull", x, y);
-            case "E" -> new Material("water", x, y);
-            case "T" -> new Material("tile", x, y);
-            case "F" -> new Material("fan", x, y);
-            case "B" -> new Material("box", x, y);
-            default -> throw new IllegalArgumentException("Unexpected value: " + data);
-        };
-    }
-
     /**
-     * To create Word element
+     * Parse a single-character BabaIsYou token and return the matching Cell.
+     * Format: space-separated tokens, uppercase = entity, lowercase = word/property.
      *
-     * @param data string
-     * @param x    coordinate X
-     * @param y    coordinate Y
-     * @return cell
+     * Entities  (uppercase) : B=baba F=flag W=wall A=water S=skull L=lava R=rock T=tile N=smiley
+     * Noun words (lowercase): b=baba f=flag w=wall a=water s=skull l=lava r=rock n=smiley
+     * Operator              : i=is
+     * Properties            : y=you v=win t=stop p=push m=melt h=hot d=defeat k=sink u=jump
+     * Empty                 : - (or anything else)
      */
-    private static Cell wordFabric(String data, int x, int y) {
-        return switch (data) {
-            case "baba", "rock", "flag", "wall", "lava", "skull", "water", "fan", "box" -> new Word(data, x, y);
-            default -> throw new IllegalArgumentException("Unexpected value: " + data);
+    private static Cell classification(String token, int x, int y) {
+        return switch (token) {
+            // --- Entities → Material ---
+            case "B" -> new Material("baba",   x, y);
+            case "F" -> new Material("flag",   x, y);
+            case "W" -> new Material("wall",   x, y);
+            case "A" -> new Material("water",  x, y);
+            case "S" -> new Material("skull",  x, y);
+            case "L" -> new Material("lava",   x, y);
+            case "R" -> new Material("rock",   x, y);
+            case "T" -> new Material("tile",   x, y);
+            case "N" -> new Material("smiley", x, y);
+            // --- Noun words → Word ---
+            case "b" -> new Word("baba",   x, y);
+            case "f" -> new Word("flag",   x, y);
+            case "w" -> new Word("wall",   x, y);
+            case "a" -> new Word("water",  x, y);
+            case "s" -> new Word("skull",  x, y);
+            case "l" -> new Word("lava",   x, y);
+            case "r" -> new Word("rock",   x, y);
+            case "n" -> new Word("smiley", x, y);
+            // --- Operator ---
+            case "i" -> new Operator("is", x, y);
+            // --- Properties → Action ---
+            case "y" -> new Action("you",    x, y);
+            case "v" -> new Action("win",    x, y);
+            case "t" -> new Action("stop",   x, y);
+            case "p" -> new Action("push",   x, y);
+            case "m" -> new Action("melt",   x, y);
+            case "h" -> new Action("hot",    x, y);
+            case "d" -> new Action("defeat", x, y);
+            case "k" -> new Action("sink",   x, y);
+            case "u" -> new Action("jump",   x, y);
+            // --- Empty / background ---
+            default  -> new Element("*", x, y);
         };
-    }
-
-    /**
-     * To create Action element
-     *
-     * @param data string
-     * @param x    coordinate X
-     * @param y    coordinate Y
-     * @return cell
-     */
-    private static Cell actionFabric(String data, int x, int y) {
-        return switch (data) {
-            case "you", "push", "win", "stop", "melt", "defeat", "sink", "reverse", "pull", "hot" -> new Action(data, x, y);
-            default -> throw new IllegalArgumentException("Unexpected value: " + data);
-        };
-    }
-
-    /**
-     * Parse the data and determine its category to transform it into a cell
-     *
-     * @param data string
-     * @param x    coordinate X
-     * @param y    coordinate Y
-     * @return cell
-     */
-    private static Cell classification(String data, int x, int y) {
-        var patternMaterial = Pattern.compile("(O|M|-|X|T|B|L|D|E|F)");
-        var patternWord = Pattern.compile("(baba|rock|flag|wall|water|lava|skull|fan|box)");
-        var patternAction = Pattern.compile("(push|you|win|stop|sink|defeat|melt|reverse|pull|hot)");
-
-        if (patternMaterial.matcher(data).matches())
-            return materialFabric(data, x, y);
-        if (patternWord.matcher(data).matches())
-            return wordFabric(data, x, y);
-        if (patternAction.matcher(data).matches())
-            return actionFabric(data, x, y);
-        if (data.equals("*"))
-            return new Element(data, x, y);
-        if (data.equals("is"))
-            return new Operator(data, x, y);
-        throw new IllegalArgumentException("Unexpected value: " + data);
     }
 
     /**

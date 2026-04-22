@@ -2,17 +2,22 @@ package fr.umlv.babaisyou.model;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 public class ImageLoader {
-    private final Map<String, List<BufferedImage>> images = new HashMap<>();
-    private final Map<String, Integer> animationIndices = new HashMap<>();
+    private final Map<String, List<BufferedImage>> frames = new HashMap<>();
+
+    // Global animation state: all sprites advance together (like the real game)
+    private long lastFrameAdvance = System.currentTimeMillis();
+    private int globalFrameIndex = 0;
+    private static final int FRAME_DURATION_MS = 150; // ~7 FPS animation
 
     public void loadImages() throws IOException {
         try (var inputStream = ImageLoader.class.getResourceAsStream("/images_list.txt")) {
@@ -20,55 +25,86 @@ public class ImageLoader {
                 throw new IOException("images_list.txt not found");
             }
             try (var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream))) {
-                reader.lines().forEach(this::loadImage);
+                reader.lines().filter(l -> !l.isBlank()).forEach(this::loadImage);
             }
         }
     }
 
     private void loadImage(String path) {
-        try {
-            var url = ImageLoader.class.getResource("/" + path);
-            if (url != null) {
-                BufferedImage img = ImageIO.read(url);
-                if (img != null) {
-                    // Extract folder name from path (e.g., "images/baba/baba_0.png" -> "baba")
-                    String[] parts = path.split("/");
-                    if (parts.length >= 2) {
-                        String folderName = parts[parts.length - 2];
-                        images.computeIfAbsent(folderName, k -> new ArrayList<>()).add(img);
-                    }
-                }
+        // Key = filename without extension (e.g. "babaEntity", "youWord", "isWord")
+        String fileName = path.substring(path.lastIndexOf('/') + 1);
+        String key = fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
+
+        List<BufferedImage> gifFrames = readGifFrames(path);
+        if (!gifFrames.isEmpty()) {
+            frames.put(key, gifFrames);
+        } else {
+            System.err.println("No frames loaded for: " + path);
+        }
+    }
+
+    /**
+     * Reads all frames of an animated GIF using ImageReader.
+     * Falls back to ImageIO.read() for single-frame images.
+     */
+    private List<BufferedImage> readGifFrames(String path) {
+        List<BufferedImage> result = new ArrayList<>();
+        var url = ImageLoader.class.getResource("/" + path);
+        if (url == null) return result;
+
+        Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("gif");
+        if (!readers.hasNext()) return result;
+
+        ImageReader reader = readers.next();
+        try (ImageInputStream iis = ImageIO.createImageInputStream(url.openStream())) {
+            reader.setInput(iis);
+            int count = reader.getNumImages(true);
+            for (int i = 0; i < count; i++) {
+                result.add(reader.read(i));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Failed to load GIF frames: " + path + " — " + e.getMessage());
+        } finally {
+            reader.dispose();
         }
+        return result;
     }
 
-    public List<BufferedImage> getImages(String directoryName, Cell cell) {
-        return switch (cell) {
-            case Operator op -> images.getOrDefault(directoryName, new ArrayList<>());
-            case Word word -> images.getOrDefault(directoryName + "_txt", new ArrayList<>());
-            case Material material -> images.getOrDefault(directoryName, new ArrayList<>());
-            default -> images.getOrDefault(directoryName, new ArrayList<>());
+    /**
+     * Returns the current animation frame for the given cell.
+     * Advances the global frame index based on elapsed time.
+     *
+     * Mapping:
+     *   Material  → "{name}Entity"   (e.g. "baba"  → "babaEntity")
+     *   Word      → "{name}Word"     (e.g. "baba"  → "babaWord")
+     *   Action    → "{name}Word"     (e.g. "you"   → "youWord")
+     *   Operator  → "isWord"
+     *   Element   → "emptyEntity"
+     */
+    public BufferedImage getNextImage(String name, Cell cell) {
+        // Advance global frame counter based on time (not per-cell-call)
+        long now = System.currentTimeMillis();
+        if (now - lastFrameAdvance >= FRAME_DURATION_MS) {
+            globalFrameIndex++;
+            lastFrameAdvance = now;
+        }
+
+        String key = switch (cell) {
+            case Material m -> name + "Entity";
+            case Word w     -> name + "Word";
+            case Action a   -> name + "Word";
+            case Operator o -> "isWord";
+            case Element e  -> "emptyEntity";
+            default         -> name + "Entity";
         };
+
+        List<BufferedImage> frameList = frames.get(key);
+        if (frameList == null || frameList.isEmpty()) return null;
+        return frameList.get(globalFrameIndex % frameList.size());
     }
 
-    public BufferedImage getNextImage(String directoryName, Cell cell) {
-        List<BufferedImage> imageList = getImages(directoryName, cell);
-        if (imageList.isEmpty()) {
-            return null;
-        }
-
-        int index = animationIndices.getOrDefault(directoryName, 0);
-        BufferedImage nextImage = imageList.get(index);
-
-        index = (index + 1) % imageList.size();
-        animationIndices.put(directoryName, index);
-
-        return nextImage;
-    }
-
+    // Kept for compatibility
     public void resetAnimation(String directoryName) {
-        animationIndices.put(directoryName, 0);
+        // No-op: animation is time-based and global
     }
 }
