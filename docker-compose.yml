@@ -1,0 +1,23 @@
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "8080"          # uniquement visible en interne (Nginx → backend)
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"         # seul port exposé à l'hôte
+    depends_on:
+      backend:
+        condition: service_healthy

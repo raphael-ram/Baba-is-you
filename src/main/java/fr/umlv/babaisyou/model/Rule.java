@@ -113,32 +113,26 @@ public class Rule {
     }
 
     /**
-     * Deactivate all the existing rules
+     * Deactivate all rules in a single grid pass instead of 10 separate passes.
+     * Reduces O(10×N) to O(N) where N = number of cells.
      */
     public void deactivateAllRules() {
-        deactivateMelt();
-        deactivateHot();
-        deactivateSink();
-        deactivateDefeat();
-        deactivatePull();
-        deactivatePush();
-        deactivateReverse();
-        deactivateStop();
-        deactivateWin();
-        deactivateYou();
-    }
-
-    /**
-     * Deactivate Push action on the cells which it is applied on
-     */
-    private void deactivatePush() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isPushable() && s.getFirst().isMaterial()) {
-                Cell first = s.getFirst();
-                first.setPushable(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
+        g.grid.stream()
+            .flatMap(List::stream)
+            .map(LinkedList::getFirst)
+            .filter(Cell::isMaterial)
+            .forEach(cell -> {
+                cell.setPushable(false);
+                cell.setStop(false);
+                cell.setWin(false);
+                cell.setPawn(false);
+                cell.setReverse(false);
+                cell.setMelt(false);
+                cell.setHot(false);
+                cell.setSink(false);
+                cell.setDefeat(false);
+                cell.setPull(false);
+            });
     }
 
     /**
@@ -161,19 +155,6 @@ public class Rule {
     }
 
     /**
-     * Deactivate Stop action on the cells which it is applied on
-     */
-    private void deactivateStop() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isStop() && s.getFirst().isMaterial()) {
-                Cell first = s.getFirst();
-                first.setStop(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
-    }
-
-    /**
      * Apply Stop action on the cell
      *
      * @param rule contains a word, an operator and an action
@@ -190,19 +171,6 @@ public class Rule {
                 g.grid.stream().flatMap(List::stream).forEach(makeElementStop);
             }
         }
-    }
-
-    /**
-     * Deactivate Win action on the cells which it is applied on
-     */
-    private void deactivateWin() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isWin() && s.getFirst().isMaterial()) {
-                Cell first = s.getFirst();
-                first.setWin(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
     }
 
     /**
@@ -225,19 +193,6 @@ public class Rule {
     }
 
     /**
-     * Deactivate You action on the cells which it is applied on
-     */
-    private void deactivateYou() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isPawn() && s.getFirst().isMaterial()) {
-                Cell first = s.getFirst();
-                first.setPawn(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
-    }
-
-    /**
      * Apply You action on the cell
      *
      * @param rule contains a word, an operator and an action
@@ -254,19 +209,6 @@ public class Rule {
                 g.grid.stream().flatMap(List::stream).forEach(makeElementYou);
             }
         }
-    }
-
-    /**
-     * Deactivate Reverse action on the cells which it is applied on
-     */
-    private void deactivateReverse() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isReverse() && s.getFirst().isMaterial()) {
-                Cell first = s.getFirst();
-                first.setReverse(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
     }
 
     /**
@@ -289,18 +231,6 @@ public class Rule {
     }
 
     /**
-     * Deactivate Melt action
-     */
-    private void deactivateMelt() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isMelt() && s.getFirst().isMaterial()) {
-                s.getFirst().setMelt(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
-    }
-
-    /**
      * Apply Melt action
      */
     private void meltRule(ArrayList<Cell> rule) {
@@ -315,18 +245,6 @@ public class Rule {
                 g.grid.stream().flatMap(List::stream).forEach(makeElementMelt);
             }
         }
-    }
-
-    /**
-     * Deactivate Hot action
-     */
-    private void deactivateHot() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isHot() && s.getFirst().isMaterial()) {
-                s.getFirst().setHot(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
     }
 
     /**
@@ -347,18 +265,6 @@ public class Rule {
     }
 
     /**
-     * Deactivate Sink action
-     */
-    private void deactivateSink() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isSink() && s.getFirst().isMaterial()) {
-                s.getFirst().setSink(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
-    }
-
-    /**
      * Apply Sink action
      */
     private void sinkRule(ArrayList<Cell> rule) {
@@ -373,18 +279,6 @@ public class Rule {
                 g.grid.stream().flatMap(List::stream).forEach(makeElementSink);
             }
         }
-    }
-
-    /**
-     * Deactivate Defeat action
-     */
-    private void deactivateDefeat() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isDefeat() && s.getFirst().isMaterial()) {
-                s.getFirst().setDefeat(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
     }
 
     /**
@@ -434,18 +328,6 @@ public class Rule {
         }
         return activeRules;
     }
-    /**
-     * Deactivate Pull action
-     */
-    private void deactivatePull() {
-        Consumer<LinkedList<Cell>> deactivatElement = s -> {
-            if (s.getFirst().isPull() && s.getFirst().isMaterial()) {
-                s.getFirst().setPull(false);
-            }
-        };
-        g.grid.stream().flatMap(List::stream).forEach(deactivatElement);
-    }
-
     /**
      * Apply Pull action
      */

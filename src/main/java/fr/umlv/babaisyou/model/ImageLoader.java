@@ -3,29 +3,48 @@ package fr.umlv.babaisyou.model;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
 public class ImageLoader {
-    private final Map<String, List<BufferedImage>> frames = new HashMap<>();
+    private final ConcurrentHashMap<String, List<BufferedImage>> frames = new ConcurrentHashMap<>();
 
     // Global animation state: all sprites advance together (like the real game)
     private long lastFrameAdvance = System.currentTimeMillis();
     private int globalFrameIndex = 0;
     private static final int FRAME_DURATION_MS = 150; // ~7 FPS animation
 
+    /**
+     * Loads all GIFs in parallel using Virtual Threads (Java 21+).
+     * I/O-bound work: each GIF open+decode runs in its own virtual thread,
+     * so disk/classpath latency is overlapped across all 35 assets.
+     */
     public void loadImages() throws IOException {
+        List<String> imagePaths;
         try (var inputStream = ImageLoader.class.getResourceAsStream("/images_list.txt")) {
             if (inputStream == null) {
                 throw new IOException("images_list.txt not found");
             }
             try (var reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream))) {
-                reader.lines().filter(l -> !l.isBlank()).forEach(this::loadImage);
+                imagePaths = reader.lines().filter(l -> !l.isBlank()).toList();
+            }
+        }
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var futures = imagePaths.stream()
+                .map(path -> executor.submit(() -> loadImage(path)))
+                .toList();
+            for (var future : futures) {
+                try {
+                    future.get();
+                } catch (Exception e) {
+                    System.err.println("Error loading image: " + e.getMessage());
+                }
             }
         }
     }

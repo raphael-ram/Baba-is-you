@@ -1,0 +1,19 @@
+<div class="menu">
+  <h1 class="title">BABA IS YOU</h1>
+
+  <div class="connection" [class.ok]="game.connected()">
+    {{ game.connected() ? 'Connected' : 'Connecting...' }}
+  </div>
+
+  <ul class="level-list">
+    @for (name of levels; track $index) {
+      <li>
+        <button class="level-btn" (click)="select($index)" [disabled]="!game.connected()">
+          {{ name }}
+        </button>
+      </li>
+    }
+  </ul>
+
+  <p class="hint">Arrow keys to move · R to restart · ESC to return to menu</p>
+</div>
